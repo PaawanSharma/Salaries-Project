@@ -35,7 +35,7 @@ def plot_categorical(feature, target, dataframe):
     target -- the target variable
     dataframe -- the pandas DataFrame containing the data
     """
-    cat_fig = plt.figure(figsize=(15, 5))
+    cat_fig = plt.figure(figsize=(21, 7))
     ascending = dataframe[target].groupby(
         dataframe[feature]).median().sort_values().index
 
