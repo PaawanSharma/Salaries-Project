@@ -1,7 +1,6 @@
 """Plotting functions for EDA."""
 
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
 import seaborn as sns
 
 
@@ -59,8 +58,8 @@ def plot_categorical(feature, target, dataframe):
                           flierprops={'markerfacecolor': 'white'},
                           ax=box_ax)
 
-    for axes in [count_ax, box_ax]:
-        categoricals_axes(axes, feature, "Salary / 1000 USD")
+    for plotted in [cat_count, cat_box]:
+        categoricals_axes(plotted, feature, "Salary / 1000 USD")
 
 def categorical_correlation(feature, target, dataframe, groupfunc, x_label=None,
                             y_label = None):
@@ -88,25 +87,28 @@ def categorical_correlation(feature, target, dataframe, groupfunc, x_label=None,
         
     cc_fig, cc_ax = plt.subplots(figsize=(12, 12))
     reg_plot = sns.regplot(x=grouped_feature, y=target_mean, marker='.')
-    categoricals_axes(cc_ax)
+    categoricals_axes(reg_plot)
 
-def categoricals_axes(axes, feature=None, target_label=None):
+def categoricals_axes(plotted, feature=None, target_label=None):
     """Stylise plot axes for improved visual clarity.
 
     Keyword Arguments:
     -----------------
-    axes -- the axes object
+    plotted -- the plot object
     feature -- the feature that was plotted
     target_label -- a label for the target axis
     """
-    if feature == "companyId":
-        ticks_loc = axes.get_xticks().tolist()
-        axes.xaxis.set_major_locator(mticker.FixedLocator(ticks_loc))
-        axes.set_xticklabels([])
+    plt.draw()
+
+    if feature == 'jobType':
+        rot_angle = 60
     else:
-        ticks_loc = axes.get_xticks().tolist()
-        axes.xaxis.set_major_locator(mticker.FixedLocator(ticks_loc))
-        axes.set_xticklabels(axes.get_xticklabels(), rotation=36)
+        rot_angle = 36
+        
+    if feature == "companyId":
+        plotted.set_xticklabels([])
+    else:
+        plotted.set_xticklabels(plotted.get_xticklabels(), rotation=rot_angle)
 
     if target_label:
-        axes.set(ylabel=target_label)
+        plotted.set(ylabel=target_label)
