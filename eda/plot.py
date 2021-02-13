@@ -59,7 +59,33 @@ def plot_categorical(feature, target, dataframe):
                           ax=box_ax)
 
     for plotted in [cat_count, cat_box]:
-        categoricals_axes(plotted, feature, "Salary / 1000 USD")
+        categoricals_axes(plotted, feature)
+
+def plot_numerical(feature, target, dataframe, target_unit=None):
+    """
+    """
+    fig = plt.figure(figsize=(21, 7))
+    
+    count_ax = fig.add_subplot(1, 2, 1)
+    counts = sns.lineplot(data=dataframe[feature].value_counts(),
+                          ax=count_ax)
+    counts.set(xlabel=counts.get_ylabel(),
+               ylabel='count')
+    
+    hex_ax = fig.add_subplot(1, 2, 2)
+    hex_plot = dataframe.plot.hexbin(x=feature,
+                                     y=target,
+                                     gridsize=20,
+                                     ax=hex_ax)
+    if target_unit:
+        hex_plot.set_ylabel('{} / {}'.format(target.title(), target_unit))
+    mean_line = dataframe.groupby(feature)[target].mean()
+    mean_line.plot(ax=hex_ax,
+                   label='mean {}/{}'.format(target, feature),
+                   color='yellow',
+                   alpha=0.5)
+    plt.legend()
+
 
 def categorical_correlation(feature, target, dataframe, groupfunc, x_label=None,
                             y_label = None):
@@ -89,7 +115,7 @@ def categorical_correlation(feature, target, dataframe, groupfunc, x_label=None,
     reg_plot = sns.regplot(x=grouped_feature, y=target_mean, marker='.')
     categoricals_axes(reg_plot)
 
-def categoricals_axes(plotted, feature=None, target_label=None):
+def categoricals_axes(plotted, feature=None):
     """Stylise plot axes for improved visual clarity.
 
     Keyword Arguments:
@@ -109,6 +135,6 @@ def categoricals_axes(plotted, feature=None, target_label=None):
         plotted.set_xticklabels([])
     else:
         plotted.set_xticklabels(plotted.get_xticklabels(), rotation=rot_angle)
-
-    if target_label:
-        plotted.set(ylabel=target_label)
+    
+    if plotted.get_ylabel() == "salary":
+        plotted.set_ylabel('Salary / 1000 USD')
