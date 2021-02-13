@@ -67,10 +67,8 @@ def plot_numerical(feature, target, dataframe, target_unit=None):
     fig = plt.figure(figsize=(21, 7))
     
     count_ax = fig.add_subplot(1, 2, 1)
-    counts = sns.lineplot(data=dataframe[feature].value_counts(),
+    counts = sns.histplot(data=dataframe, x=feature, discrete=True,
                           ax=count_ax)
-    counts.set(xlabel=counts.get_ylabel(),
-               ylabel='count')
     
     hex_ax = fig.add_subplot(1, 2, 2)
     hex_plot = dataframe.plot.hexbin(x=feature,
