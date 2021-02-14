@@ -1,7 +1,8 @@
 """Plotting functions for EDA."""
 
-import matplotlib.pyplot as plt
+from matplotlib.pyplot import draw, figure, legend, subplots
 import seaborn as sns
+from seaborn import boxplot, countplot, histplot, regplot
 
 
 def plot_target(target, dataframe, hist_bins=20, target_label=None):
@@ -14,15 +15,15 @@ def plot_target(target, dataframe, hist_bins=20, target_label=None):
     hist_bins -- the number of bins to use in the histogram plot
     target_label -- a label for the target axis
     """
-    target_fig = plt.figure(figsize=(16, 16))
+    target_fig = figure(figsize=(16, 16))
 
     box_ax = target_fig.add_subplot(2, 1, 1)
-    target_box = sns.boxplot(dataframe[target],
+    target_box = boxplot(dataframe[target],
                 flierprops={'markerfacecolor': 'white'},
                 ax=box_ax)
 
     hist_ax = target_fig.add_subplot(2, 1, 2)
-    target_hist = sns.histplot(dataframe[target],
+    target_hist = histplot(dataframe[target],
                  bins=hist_bins,
                  kde=True,
                  ax=hist_ax)
@@ -41,17 +42,17 @@ def plot_categorical(feature, target, dataframe):
     target -- the target variable
     dataframe -- the pandas DataFrame containing the data
     """
-    cat_fig = plt.figure(figsize=(21, 7))
+    cat_fig = figure(figsize=(21, 7))
     ascending = dataframe[target].groupby(
         dataframe[feature]).median().sort_values().index
 
     count_ax = cat_fig.add_subplot(1, 2, 1)
-    cat_count = sns.countplot(dataframe[feature],
+    cat_count = countplot(dataframe[feature],
                               order=ascending,
                               ax=count_ax)
 
     box_ax = cat_fig.add_subplot(1, 2, 2)
-    cat_box = sns.boxplot(x=feature,
+    cat_box = boxplot(x=feature,
                           y=target,
                           data=dataframe,
                           order=ascending,
@@ -64,10 +65,10 @@ def plot_categorical(feature, target, dataframe):
 def plot_numerical(feature, target, dataframe, target_unit=None):
     """
     """
-    fig = plt.figure(figsize=(21, 7))
+    fig = figure(figsize=(21, 7))
     
     count_ax = fig.add_subplot(1, 2, 1)
-    counts = sns.histplot(data=dataframe, x=feature, discrete=True,
+    counts = histplot(data=dataframe, x=feature, discrete=True,
                           ax=count_ax)
     
     hex_ax = fig.add_subplot(1, 2, 2)
@@ -82,7 +83,7 @@ def plot_numerical(feature, target, dataframe, target_unit=None):
                    label='mean {}/{}'.format(target, feature),
                    color='yellow',
                    alpha=0.5)
-    plt.legend()
+    legend()
 
 
 def categorical_correlation(feature, target, dataframe, groupfunc, x_label=None,
@@ -109,8 +110,8 @@ def categorical_correlation(feature, target, dataframe, groupfunc, x_label=None,
     if y_label:
         target_mean.name = y_label
         
-    cc_fig, cc_ax = plt.subplots(figsize=(12, 12))
-    reg_plot = sns.regplot(x=grouped_feature, y=target_mean, marker='.')
+    cc_fig, cc_ax = subplots(figsize=(12, 12))
+    reg_plot = regplot(x=grouped_feature, y=target_mean, marker='.')
     categoricals_axes(reg_plot)
 
 def categoricals_axes(plotted, feature=None):
@@ -122,7 +123,7 @@ def categoricals_axes(plotted, feature=None):
     feature -- the feature that was plotted
     target_label -- a label for the target axis
     """
-    plt.draw()
+    draw()
 
     if feature == 'jobType':
         rot_angle = 60
