@@ -2,6 +2,8 @@
 
 from pandas import get_dummies
 
+from exceptions import NotUniqueError
+
 
 def dummify(features, dataframe, exclude):
     """Apply dummy coding.
@@ -27,12 +29,6 @@ def dummify(features, dataframe, exclude):
     return dummied
 
 
-class NotUniqueError(Exception):
-    """Exception for when a series isn't unique."""
-
-    pass
-
-
 def ordinal_encode(features, dataframe, metric, target):
     """Apply ordinal encoding.
 
@@ -55,10 +51,10 @@ def ordinal_encode(features, dataframe, metric, target):
 
     if not metric_values.is_unique:
         raise NotUniqueError("Ordinal encoding cannot be executed with \
-                             these arguments as two or more groups of {} \
-                                 have the same {} {}.".format(feature,
-                                                              target,
-                                                              metric.__name__))
+these parameters as two or more groups of {} \
+have the same {} {}.".format(feature,
+                             target,
+                             metric.__name__))
 
     order = metric_values.index
     dataframe[feature] = dataframe[feature].replace(order, range(len(order)))

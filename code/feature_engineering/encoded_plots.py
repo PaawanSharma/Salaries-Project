@@ -4,8 +4,14 @@ from matplotlib.pyplot import figure, show
 from seaborn import set_context, heatmap
 from numpy import zeros_like, triu_indices_from
 
+from exceptions import NotUniqueError
 
-def get_corr_matrix(features, dataframe, encoder_func, reorder=False, **kwargs):
+
+def get_corr_matrix(features,
+                    dataframe,
+                    encoder_func,
+                    reorder=False,
+                    **kwargs):
     """Return correlation matrix for a particular encoding.
 
     Keyword Arguments:
@@ -18,7 +24,11 @@ def get_corr_matrix(features, dataframe, encoder_func, reorder=False, **kwargs):
     metric --
     target --
     """
-    encoded = encoder_func(features, dataframe, **kwargs)
+    try:
+        encoded = encoder_func(features, dataframe, **kwargs)
+    except NotUniqueError as nue:
+        print(nue)
+        return
     corr_matrix = encoded.corr()
 
     if reorder:
@@ -31,7 +41,7 @@ def get_corr_matrix(features, dataframe, encoder_func, reorder=False, **kwargs):
     return corr_matrix
 
 
-def heat_map(matrix, cmap, size, fontsize, dp):
+def heat_map(matrix, cmap, size, fontsize, dp, abort=False):
     """Produce heatmap.
 
     Keyword Arguments:
@@ -41,6 +51,8 @@ def heat_map(matrix, cmap, size, fontsize, dp):
     size --
     fontsize --
     """
+    if abort:
+        return
     mask = zeros_like(matrix)
     mask[triu_indices_from(mask)] = 1
     set_context('poster', font_scale=fontsize)
