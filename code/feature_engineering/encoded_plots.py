@@ -5,7 +5,7 @@ from seaborn import set_context, heatmap
 from numpy import zeros_like, triu_indices_from
 
 
-def get_corr_matrix(features, dataframe, exclude, encoder_func, reorder=False):
+def get_corr_matrix(features, dataframe, encoder_func, reorder=False, **kwargs):
     """Return correlation matrix for a particular encoding.
 
     Keyword Arguments:
@@ -15,8 +15,10 @@ def get_corr_matrix(features, dataframe, exclude, encoder_func, reorder=False):
     exclude --
     encoder_func --
     reorder --
+    metric --
+    target --
     """
-    encoded = encoder_func(features, dataframe, exclude)
+    encoded = encoder_func(features, dataframe, **kwargs)
     corr_matrix = encoded.corr()
 
     if reorder:
@@ -29,7 +31,7 @@ def get_corr_matrix(features, dataframe, exclude, encoder_func, reorder=False):
     return corr_matrix
 
 
-def heat_map(matrix, cmap, size, fontsize):
+def heat_map(matrix, cmap, size, fontsize, dp):
     """Produce heatmap.
 
     Keyword Arguments:
@@ -51,7 +53,7 @@ def heat_map(matrix, cmap, size, fontsize):
             linewidths=0.5,
             linecolor='black',
             annot=True,
-            fmt='.1f',
+            fmt='.{}f'.format(dp),
             cbar=False,
             figure=fig)
     show()

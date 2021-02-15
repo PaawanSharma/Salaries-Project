@@ -33,7 +33,7 @@ class NotUniqueError(Exception):
     pass
 
 
-def ordinal_encode(features, target, metric, dataframe):
+def ordinal_encode(features, dataframe, metric, target):
     """Apply ordinal encoding.
 
     Keyword Arguments:
@@ -63,4 +63,4 @@ def ordinal_encode(features, target, metric, dataframe):
     order = metric_values.index
     dataframe[feature] = dataframe[feature].replace(order, range(len(order)))
 
-    return ordinal_encode(features[1:], target, metric, dataframe)
+    return ordinal_encode(features[1:], dataframe, metric, target)
