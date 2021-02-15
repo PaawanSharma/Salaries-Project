@@ -22,10 +22,9 @@ def dummify(features, dataframe, exclude):
         except ValueError:
             pass
 
-    dummied = get_dummies(excluded,
-                          prefix=features,
-                          columns=features,
-                          drop_first=True)
+    dummied = get_dummies(
+        excluded, prefix=features, columns=features, drop_first=True
+    )
     return dummied
 
 
@@ -46,15 +45,18 @@ def ordinal_encode(features, dataframe, metric, target):
 
     feature = features[0]
 
-    metric_values = dataframe.groupby(feature)[target].\
-        apply(metric).sort_values()
+    metric_values = (
+        dataframe.groupby(feature)[target].apply(metric).sort_values()
+    )
 
     if not metric_values.is_unique:
-        raise NotUniqueError("Ordinal encoding cannot be executed with \
+        raise NotUniqueError(
+            "Ordinal encoding cannot be executed with \
 these parameters as two or more groups of {} \
-have the same {} {}.".format(feature,
-                             target,
-                             metric.__name__))
+have the same {} {}.".format(
+                feature, target, metric.__name__
+            )
+        )
 
     order = metric_values.index
     dataframe[feature] = dataframe[feature].replace(order, range(len(order)))
@@ -79,15 +81,16 @@ def label_encode(features, dataframe, metric, target):
 
     feature = features[0]
 
-    metric_values = dataframe.groupby(feature)[target].\
-        apply(metric)
+    metric_values = dataframe.groupby(feature)[target].apply(metric)
 
     if not metric_values.is_unique:
-        raise NotUniqueError("Ordinal encoding cannot be executed with \
+        raise NotUniqueError(
+            "Ordinal encoding cannot be executed with \
 these parameters as two or more groups of {} \
-have the same {} {}.".format(feature,
-                             target,
-                             metric.__name__))
+have the same {} {}.".format(
+                feature, target, metric.__name__
+            )
+        )
 
     mapping = metric_values.to_dict()
     dataframe[feature].replace(mapping, inplace=True)

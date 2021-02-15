@@ -15,8 +15,9 @@ def interquartile_rule(feature, dataframe):
     upper_bound = upper_quartile + iqr * 1.5
     lower_bound = lower_quartile - iqr * 1.5
 
-    outliers = dataframe[(dataframe[feature] < lower_bound) |
-                         (dataframe[feature] > upper_bound)]
+    outliers = dataframe[
+        (dataframe[feature] < lower_bound) | (dataframe[feature] > upper_bound)
+    ]
 
     upper_count = outliers[outliers[feature] > upper_bound].shape[0]
     lower_count = outliers[outliers[feature] < lower_bound].shape[0]

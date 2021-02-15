@@ -17,15 +17,14 @@ def plot_target(target, dataframe, hist_bins=20, target_label=None):
     target_fig = figure(figsize=(16, 16))
 
     box_ax = target_fig.add_subplot(2, 1, 1)
-    target_box = boxplot(dataframe[target],
-                         flierprops={'markerfacecolor': 'white'},
-                         ax=box_ax)
+    target_box = boxplot(
+        dataframe[target], flierprops={"markerfacecolor": "white"}, ax=box_ax
+    )
 
     hist_ax = target_fig.add_subplot(2, 1, 2)
-    target_hist = histplot(dataframe[target],
-                           bins=hist_bins,
-                           kde=True,
-                           ax=hist_ax)
+    target_hist = histplot(
+        dataframe[target], bins=hist_bins, kde=True, ax=hist_ax
+    )
 
     if target_label:
         for axes in [target_box, target_hist]:
@@ -42,21 +41,26 @@ def plot_categorical(feature, target, dataframe):
     dataframe -- the pandas DataFrame containing the data
     """
     cat_fig = figure(figsize=(21, 7))
-    ascending = dataframe[target].groupby(
-        dataframe[feature]).median().sort_values().index
+    ascending = (
+        dataframe[target]
+        .groupby(dataframe[feature])
+        .median()
+        .sort_values()
+        .index
+    )
 
     count_ax = cat_fig.add_subplot(1, 2, 1)
-    cat_count = countplot(dataframe[feature],
-                          order=ascending,
-                          ax=count_ax)
+    cat_count = countplot(dataframe[feature], order=ascending, ax=count_ax)
 
     box_ax = cat_fig.add_subplot(1, 2, 2)
-    cat_box = boxplot(x=feature,
-                      y=target,
-                      data=dataframe,
-                      order=ascending,
-                      flierprops={'markerfacecolor': 'white'},
-                      ax=box_ax)
+    cat_box = boxplot(
+        x=feature,
+        y=target,
+        data=dataframe,
+        order=ascending,
+        flierprops={"markerfacecolor": "white"},
+        ax=box_ax,
+    )
 
     for plotted in [cat_count, cat_box]:
         categoricals_axes(plotted, feature)
@@ -75,32 +79,27 @@ def plot_numerical(feature, target, dataframe, target_unit=None):
     fig = figure(figsize=(21, 7))
 
     hist_ax = fig.add_subplot(1, 2, 1)
-    histplot(data=dataframe,
-             x=feature,
-             discrete=True,
-             ax=hist_ax)
+    histplot(data=dataframe, x=feature, discrete=True, ax=hist_ax)
 
     hex_ax = fig.add_subplot(1, 2, 2)
-    hex_plot = dataframe.plot.hexbin(x=feature,
-                                     y=target,
-                                     gridsize=20,
-                                     ax=hex_ax)
+    hex_plot = dataframe.plot.hexbin(
+        x=feature, y=target, gridsize=20, ax=hex_ax
+    )
     if target_unit:
-        hex_plot.set_ylabel('{} / {}'.format(target.title(), target_unit))
+        hex_plot.set_ylabel("{} / {}".format(target.title(), target_unit))
     mean_line = dataframe.groupby(feature)[target].mean()
-    mean_line.plot(ax=hex_ax,
-                   label='mean {}/{}'.format(target, feature),
-                   color='yellow',
-                   alpha=0.5)
+    mean_line.plot(
+        ax=hex_ax,
+        label="mean {}/{}".format(target, feature),
+        color="yellow",
+        alpha=0.5,
+    )
     legend()
 
 
-def categorical_correlation(feature,
-                            target,
-                            dataframe,
-                            groupfunc,
-                            x_label=None,
-                            y_label=None):
+def categorical_correlation(
+    feature, target, dataframe, groupfunc, x_label=None, y_label=None
+):
     """Group data by categorical feature and plot correlation with mean target.
 
     Keyword Arguments:
@@ -124,7 +123,7 @@ def categorical_correlation(feature,
         target_mean.name = y_label
 
     cc_fig, cc_ax = subplots(figsize=(12, 12))
-    reg_plot = regplot(x=grouped_feature, y=target_mean, marker='.')
+    reg_plot = regplot(x=grouped_feature, y=target_mean, marker=".")
     categoricals_axes(reg_plot)
 
 
@@ -139,7 +138,7 @@ def categoricals_axes(plotted, feature=None):
     """
     draw()
 
-    if feature == 'jobType':
+    if feature == "jobType":
         rot_angle = 60
     else:
         rot_angle = 36
@@ -150,4 +149,4 @@ def categoricals_axes(plotted, feature=None):
         plotted.set_xticklabels(plotted.get_xticklabels(), rotation=rot_angle)
 
     if plotted.get_ylabel() == "salary":
-        plotted.set_ylabel('Salary / 1000 USD')
+        plotted.set_ylabel("Salary / 1000 USD")
