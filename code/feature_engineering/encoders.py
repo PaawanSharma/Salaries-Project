@@ -56,7 +56,7 @@ class Encoder:
 
     def _set_features(self, dataframe):
         """Generate list of categorical features"""
-        if len(self.features) == 0:
+        if not self.features:
             self.features = list(
                 dataframe.columns[dataframe.dtypes == "object"]
             )
