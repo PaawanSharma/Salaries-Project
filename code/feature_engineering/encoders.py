@@ -57,9 +57,9 @@ class Encoder:
     def _set_features(self, dataframe):
         """Generate list of categorical features"""
         if not self.features:
-            self.features = list(
-                dataframe.columns[dataframe.dtypes == "object"]
-            )
+            self.features = dataframe.columns[
+                dataframe.dtypes == "object"
+            ].tolist()
         for feature in self.exclude:
             try:
                 self.features.remove(feature)
