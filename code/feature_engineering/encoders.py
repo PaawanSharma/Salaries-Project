@@ -15,6 +15,7 @@ class Encoder:
     def transform(self, dataframe):
         if not self.fitted:
             raise NotFittedError
+        dataframe = self._apply_exclusion_to_df(dataframe)
         return self._transform(dataframe)
 
     def correlation_matrix(self, dataframe):
@@ -67,7 +68,7 @@ class Encoder:
                 pass
 
     def _exclusion_and_features(self, dataframe):
-        self._apply_exclusion_to_df(dataframe)
+        dataframe = self._apply_exclusion_to_df(dataframe)
         self._set_features(dataframe)
 
     def _apply_exclusion_to_df(self, dataframe):
