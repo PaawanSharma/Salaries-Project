@@ -39,8 +39,14 @@ class Log:
 
 
 class Test_Combination:
-    def __init__(self, log_dataframe, encoder={}, scale=None, regressor=None):
-        self.encoder_name, self.encoder = encoder
+    def __init__(
+        self, log_dataframe, encoder=None, scale=None, regressor=None
+    ):
+        self.encoder = encoder
+        if self.encoder:
+            self.encoder_name = self.encoder.__name__
+        else:
+            self.encoder_name = "NONE"
         self.scale = scale
         self.regressor = regressor
         self.been_run = False

@@ -80,7 +80,7 @@ class Group_Encoder(Encoder):
     def __init__(self, metric, target, features=[], exclude=[]):
         self.metric = metric
         self.target = target
-        self.features = []
+        self.features = features
         self.exclude = exclude
         self.mapping = {}
         self.fitted = False
@@ -108,6 +108,26 @@ same {} {}.".format(
 
 
 class Ordinal_Encoder(Group_Encoder):
+    def __init__(self, *args, **kwargs):
+        super(Ordinal_Encoder, self).__init__(*args, **kwargs)
+        if not self.features:
+            feature_string_ref = "ALL"
+        else:
+            feature_string_ref = self.features
+        if self.exclude:
+            name_string = "Ordinal_Encoder(metric={}, target={}, features={}, exclude={})".format(
+                self.metric.__name__,
+                self.target,
+                feature_string_ref,
+                self.exclude,
+            )
+        else:
+            name_string = "Ordinal_Encoder(metric={}, target={}, features={})".format(
+                self.metric.__name__, self.target, feature_string_ref
+            )
+
+        self.__name__ = name_string
+
     def _generate_mapping(self, feature, metric_values):
         order = tuple(metric_values.index)
         self.mapping[order] = range(len(order))
@@ -123,6 +143,26 @@ class Ordinal_Encoder(Group_Encoder):
 
 
 class Target_Encoder(Group_Encoder):
+    def __init__(self, *args, **kwargs):
+        super(Target_Encoder, self).__init__(*args, **kwargs)
+        if not self.features:
+            feature_string_ref = "ALL"
+        else:
+            feature_string_ref = self.features
+        if self.exclude:
+            name_string = "Target_Encoder(metric={}, target={}, features={}, exclude={})".format(
+                self.metric.__name__,
+                self.target,
+                feature_string_ref,
+                self.exclude,
+            )
+        else:
+            name_string = "Ordinal_Encoder(metric={}, target={}, features={})".format(
+                self.metric.__name__, self.target, feature_string_ref
+            )
+
+        self.__name__ = name_string
+
     def _generate_mapping(self, feature, metric_values):
         self.mapping[feature] = metric_values.to_dict()
 
@@ -140,6 +180,17 @@ class Dummy_Encoder(Encoder):
         self.feature_levels = {}
         self.exclude = exclude
         self.fitted = False
+        if features:
+            feature_string_ref = self.features
+        else:
+            feature_string_ref = "ALL"
+        if exclude:
+            exclude_string_ref = "NONE"
+        else:
+            exclude_string_ref = self.exclude
+        self.__name__ = "Dummy_Encoder(features={}, exclude={})".format(
+            feature_string_ref, exclude_string_ref
+        )
 
     def _fit(self, dataframe):
         for feature in self.features:
