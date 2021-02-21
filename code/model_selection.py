@@ -1,4 +1,5 @@
-from pandas import DataFrame, Series
+from os.path import isfile
+from pandas import DataFrame, read_csv, Series
 from sklearn.model_selection import cross_val_score
 from time import time as timer
 
@@ -17,32 +18,50 @@ def cv_mse(estimator, X, y):
 
 
 class Log:
-    def __init__(self):
-        self.columns = [
-            "Encoder",
-            "Scaling",
-            "Regressor",
-            "CVS_1",
-            "CVS_2",
-            "CVS_3",
-            "CVS_4",
-            "CVS_5",
-            "Time /s",
-        ]
-        self.dataframe = DataFrame(columns=self.columns)
-        self.dataframe.index.name = "MODEL TEST"
+    def __init__(self, source=None):
+        if source and isfile(source):
+            self.dataframe = read_csv(source, index_col=0)
+        else:
+            columns = (
+                [
+                    "Training sample size",
+                    "Encoder",
+                    "Interactions",
+                    "Scaling",
+                    "Regressor",
+                ]
+                + ["CSV_{}_MSE".format(fold) for fold in range(1, 6)]
+                + ["Time /s"]
+            )
+            self.dataframe = DataFrame(columns=columns)
 
-    def add(self, encoder, scaling, regressor, cvs, time):
-        row_data = [encoder, scaling, regressor] + cvs + [time]
-        row = Series(row_data, self.columns)
+    def add(self, interactions, encoder, scaling, regressor, cvs, train_time):
+        row_data = (
+            [interactions, encoder, scaling, regressor] + cvs + [train_time]
+        )
+        row = Series(row_data, self.dataframe.columns)
         self.dataframe = self.dataframe.append(row, ignore_index=True)
+
+    def update_logfile(self, logpath):
+        if not isfile(logpath):
+            self.dataframe.to_csv(logpath)
+        else:
+            self.dataframe.to_csv(logpath, mode="a", header=False)
+            with_duplicates = read_csv(logpath, index_col=0)
+            without_duplicates = with_duplicates.drop_duplicates(
+                ignore_index=True
+            )
+            self.dataframe = without_duplicates
+            self.dataframe.to_csv(logpath)
+        print("Results saved in log!")
 
 
 class Test_Combination:
     def __init__(
-        self, log_dataframe, encoder=None, scale=None, regressor=None
+        self, encoder=None, interactions=None, scale=None, regressor=None
     ):
         self.encoder = encoder
+        self.interactions = interactions
         if self.encoder:
             self.encoder_name = self.encoder.__name__
         else:
@@ -50,33 +69,47 @@ class Test_Combination:
         self.scale = scale
         self.regressor = regressor
         self.been_run = False
-        self.log_dataframe = log_dataframe
 
-    def run(self, train_data, test_data, target):
-        X_train, y_train, encoded_test = preprocessing.encode_and_split(
-            train_data, test_data, target, self.encoder
+    def run(self, train_data, target, log):
+        self.sample_size = train_data.shape[0]
+        X_train, y_train, _ = preprocessing.encode_and_split(
+            train_data, target, self.encoder
         )
+
+        if self.interactions:
+            X_train = self.interactions.fit_transform(X_train)
+            X_train = DataFrame(X_train)
+
+        if self.scale:
+            X_train = self.scale.fit_transform(X_train)
+
         start_time = timer()
+
         self.cvs = cv_mse(self.regressor, X_train, y_train)
+
         end_time = timer()
+
         self.time = end_time - start_time
+
         self.been_run = True
-        self.log_results(self.log_dataframe)
+        self.log_results(log)
         self.print_summary()
 
-    def log_results(self, log_object):
-        log_object.add(
+    def log_results(self, log):
+        log.add(
+            self.sample_size,
             self.encoder_name,
+            str(self.interactions),
             str(self.scale),
             str(self.regressor),
             self.cvs.tolist(),
             self.time,
         )
-        print("Results added to log!")
+        print("Results staged for logging!")
 
     def print_summary(self):
         print(
-            "Mean MSE for {} with {} encoding: {}".format(
+            "Mean MSE for {} with {}: {}".format(
                 str(self.regressor), self.encoder_name, (self.cvs * -1).mean(),
             )
         )

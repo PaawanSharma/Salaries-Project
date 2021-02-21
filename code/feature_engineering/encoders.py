@@ -157,7 +157,7 @@ class Target_Encoder(Group_Encoder):
                 self.exclude,
             )
         else:
-            name_string = "Ordinal_Encoder(metric={}, target={}, features={})".format(
+            name_string = "Target_Encoder(metric={}, target={}, features={})".format(
                 self.metric.__name__, self.target, feature_string_ref
             )
 
