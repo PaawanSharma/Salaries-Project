@@ -35,9 +35,20 @@ class Log:
             )
             self.dataframe = DataFrame(columns=columns)
 
-    def add(self, interactions, encoder, scaling, regressor, cvs, train_time):
+    def add(
+        self,
+        sample_size,
+        encoder,
+        interactions,
+        scaling,
+        regressor,
+        cvs,
+        train_time,
+    ):
         row_data = (
-            [interactions, encoder, scaling, regressor] + cvs + [train_time]
+            [sample_size, encoder, interactions, scaling, regressor]
+            + cvs
+            + [train_time]
         )
         row = Series(row_data, self.dataframe.columns)
         self.dataframe = self.dataframe.append(row, ignore_index=True)
@@ -72,8 +83,8 @@ class Test_Combination:
 
     def run(self, train_data, target, log):
         self.sample_size = train_data.shape[0]
-        X_train, y_train, _ = preprocessing.encode_and_split(
-            train_data, target, self.encoder
+        X_train, y_train = preprocessing.encode_and_split(
+            train=train_data, target=target, encoder=self.encoder
         )
 
         if self.interactions:

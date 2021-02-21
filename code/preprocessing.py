@@ -12,19 +12,19 @@ def X_y_split(dataframe, target=None):
 def encode(encoder, train, test=None):
     encoder.fit(train)
     new_train = encoder.transform(train)
-    if test:
+    if test is not None:
         new_test = encoder.transform(test)
         return new_train, new_test
     return new_train
 
 
-def encode_and_split(train, test=None, target=None, encoder=None):
+def encode_and_split(train, target, encoder=None, test=None):
     if encoder:
-        if test:
+        if test is not None:
             train, test = encode(encoder, train, test)
         else:
             train = encode(encoder, train)
     X_train, y_train = X_y_split(train, target)
-    if test:
+    if test is not None:
         return X_train, y_train, test
     return X_train, y_train
