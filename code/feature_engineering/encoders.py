@@ -184,7 +184,7 @@ class Dummy_Encoder(Encoder):
             feature_string_ref = self.features
         else:
             feature_string_ref = "ALL"
-        if exclude:
+        if not exclude:
             exclude_string_ref = "NONE"
         else:
             exclude_string_ref = self.exclude
