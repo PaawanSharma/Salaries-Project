@@ -9,7 +9,7 @@ def X_y_split(dataframe, target=None):
     return X, y
 
 
-def encode(encoder, train, test= None):
+def encode(encoder, train, test=None):
     encoder.fit(train)
     new_train = encoder.transform(train)
     if test:
