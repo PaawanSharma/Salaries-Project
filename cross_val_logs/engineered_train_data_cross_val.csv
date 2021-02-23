@@ -1,0 +1,2 @@
+,Training sample size,Encoder,Interactions,Scaling,Regressor,CSV_1_MSE,CSV_2_MSE,CSV_3_MSE,CSV_4_MSE,CSV_5_MSE,Time /s
+0,999995,"Ordinal_Encoder(metric=mean, target=salary, features=ALL)",None,None,"RandomForestRegressor(max_depth=5, n_estimators=25)",-452.38594924067434,-448.29281448956766,-451.20562545070686,-443.7218983171206,-444.49939572648316,329.6064200401306
