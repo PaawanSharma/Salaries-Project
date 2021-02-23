@@ -1,4 +1,18 @@
-"""Plotting functions for EDA."""
+"""Plot.
+
+This module contains plotting functions for EDA.
+
+This module requires that the Python environment contain installations of
+plotting libraries matplotlib and seaborn.
+
+This module contains four public functions:
+
+    * plot_target - plot a boxplot and histogram for a target variable
+    * plot_categorical - plot a countplot and boxplot for a feature vs a target
+    * plot_numerical - plot count and hexbin plots for a feature vs a target
+    * categorical_correlation - group data by category and plot correlation
+    with mean target
+"""
 
 from matplotlib.pyplot import draw, figure, legend, subplots
 from seaborn import boxplot, countplot, histplot, regplot
@@ -14,19 +28,23 @@ def plot_target(target, dataframe, hist_bins=20, target_label=None):
     hist_bins -- the number of bins to use in the histogram plot
     target_label -- a label for the target axis
     """
+    # Create figure
     target_fig = figure(figsize=(16, 16))
 
+    # Create boxplot
     box_ax = target_fig.add_subplot(2, 1, 1)
     target_box = boxplot(
         dataframe[target], flierprops={"markerfacecolor": "white"}, ax=box_ax
     )
 
+    # Create histogram
     hist_ax = target_fig.add_subplot(2, 1, 2)
     target_hist = histplot(
         dataframe[target], bins=hist_bins, kde=True, ax=hist_ax
     )
 
-    if target_label:
+    # Change the x-axis labels
+    if target_label is not None:
         for axes in [target_box, target_hist]:
             axes.set(xlabel=target_label)
 
@@ -40,7 +58,10 @@ def plot_categorical(feature, target, dataframe):
     target -- the target variable
     dataframe -- the pandas DataFrame containing the data
     """
+    # Create figure
     cat_fig = figure(figsize=(21, 7))
+
+    # Get order of category groups by target median
     ascending = (
         dataframe[target]
         .groupby(dataframe[feature])
@@ -49,9 +70,11 @@ def plot_categorical(feature, target, dataframe):
         .index
     )
 
+    # Create countplot
     count_ax = cat_fig.add_subplot(1, 2, 1)
     cat_count = countplot(dataframe[feature], order=ascending, ax=count_ax)
 
+    # Create boxplot
     box_ax = cat_fig.add_subplot(1, 2, 2)
     cat_box = boxplot(
         x=feature,
@@ -62,8 +85,9 @@ def plot_categorical(feature, target, dataframe):
         ax=box_ax,
     )
 
+    # Stylise the plots for better visual clarity
     for plotted in [cat_count, cat_box]:
-        categoricals_axes(plotted, feature)
+        _categoricals_axes(plotted, feature)
 
 
 def plot_numerical(feature, target, dataframe, target_unit=None):
@@ -76,17 +100,24 @@ def plot_numerical(feature, target, dataframe, target_unit=None):
     dataframe -- the pandas DataFrame containing the data
     target_unit -- the units of the target variable (for axis labelling)
     """
+    # Create figure
     fig = figure(figsize=(21, 7))
 
+    # Create histogram
     hist_ax = fig.add_subplot(1, 2, 1)
     histplot(data=dataframe, x=feature, discrete=True, ax=hist_ax)
 
+    # Create hexbin plot
     hex_ax = fig.add_subplot(1, 2, 2)
     hex_plot = dataframe.plot.hexbin(
         x=feature, y=target, gridsize=20, ax=hex_ax
     )
-    if target_unit:
+
+    # Add unit to hexbin plot's y-axis if unit given
+    if target_unit is not None:
         hex_plot.set_ylabel("{} / {}".format(target.title(), target_unit))
+
+    # Add lineplot showing the mean target value for each feature value
     mean_line = dataframe.groupby(feature)[target].mean()
     mean_line.plot(
         ax=hex_ax,
@@ -94,6 +125,8 @@ def plot_numerical(feature, target, dataframe, target_unit=None):
         color="yellow",
         alpha=0.5,
     )
+
+    # Display the legend for the lineplot
     legend()
 
 
@@ -107,46 +140,54 @@ def categorical_correlation(
     feature -- the categorical feature to group by
     target -- the target variable
     dataframe -- the pandas DataFrame containing the data
-    groupfunc -- the function to use for grouping
+    groupfunc -- the function to apply to the groups to quantify them
     x_label -- a label for the x-axis
     y_label -- a label for the y-axis
     """
+    # Group the data by the feature values and apply a function to assign
+    # groups numerical values
     group = dataframe.groupby(feature)
     grouped_feature = group.apply(groupfunc)
 
-    if x_label:
-        grouped_feature.name = x_label
-
+    # Get the mean value of the target for each group
     target_mean = group[target].mean()
 
-    if y_label:
+    # Assign axis labels if specified
+    if x_label is not None:
+        grouped_feature.name = x_label
+    if y_label is not None:
         target_mean.name = y_label
 
+    # Create figure, axes and regplot
     cc_fig, cc_ax = subplots(figsize=(12, 12))
     reg_plot = regplot(x=grouped_feature, y=target_mean, marker=".")
-    categoricals_axes(reg_plot)
+    # Stylise the plot for better visual clarity
+    _categoricals_axes(reg_plot)
 
 
-def categoricals_axes(plotted, feature=None):
-    """Stylise plot axes for improved visual clarity.
+def _categoricals_axes(plotted, feature=None):
+    """Stylise a plot for improved visual clarity.
 
     Keyword Arguments:
     -----------------
     plotted -- the plot object
     feature -- the feature that was plotted
-    target_label -- a label for the target axis
     """
+    # draw must be called so that axes labels can be manipulated correctly
     draw()
 
+    # Define rotation angle
     if feature == "jobType":
         rot_angle = 60
     else:
         rot_angle = 36
 
+    # Rotate x-axis labels or remove them entirely in the case of companyID
     if feature == "companyId":
         plotted.set_xticklabels([])
     else:
         plotted.set_xticklabels(plotted.get_xticklabels(), rotation=rot_angle)
 
+    # Add units to salary label
     if plotted.get_ylabel() == "salary":
         plotted.set_ylabel("Salary / 1000 USD")
