@@ -14,6 +14,7 @@ This module contains four public functions:
     with mean target
 """
 
+# Third-party imports
 from matplotlib.pyplot import draw, figure, legend, subplots
 from seaborn import boxplot, countplot, histplot, regplot
 
