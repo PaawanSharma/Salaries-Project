@@ -1,4 +1,10 @@
-"""Statistical functions for EDA."""
+"""Statistical functions for EDA.
+
+This module contains one function:
+
+    * interquartile_rule - return outliers and counts of upper and lower
+    outliers as per the interquartile rule
+"""
 
 
 def interquartile_rule(feature, dataframe):
