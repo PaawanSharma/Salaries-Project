@@ -1,20 +1,14 @@
+"""
+"""
+
+# Third-party imports
 from os.path import isfile
 from pandas import DataFrame, read_csv, Series
 from sklearn.model_selection import cross_val_score
 from time import time as timer
 
+# Local imports
 import preprocessing
-
-
-def cv_mse(estimator, X, y):
-    return cross_val_score(
-        estimator=estimator,
-        X=X,
-        y=y,
-        scoring="neg_mean_squared_error",
-        n_jobs=-1,
-        verbose=True,
-    )
 
 
 class Log:
@@ -96,7 +90,7 @@ class Test_Combination:
 
         start_time = timer()
 
-        self.cvs = cv_mse(self.regressor, X_train, y_train)
+        self.cvs = _cv_mse(self.regressor, X_train, y_train)
 
         end_time = timer()
 
@@ -124,3 +118,14 @@ class Test_Combination:
                 str(self.regressor), self.encoder_name, (self.cvs * -1).mean(),
             )
         )
+
+
+def _cv_mse(estimator, X, y):
+    return cross_val_score(
+        estimator=estimator,
+        X=X,
+        y=y,
+        scoring="neg_mean_squared_error",
+        n_jobs=-1,
+        verbose=True,
+    )
