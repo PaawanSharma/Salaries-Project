@@ -22,3 +22,4 @@
 20,999995,"Ordinal_Encoder(metric=mean, target=salary, features=ALL)",None,None,"RandomForestRegressor(max_depth=14, n_estimators=25)",-362.49560212271234,-361.2928787473928,-361.8209886470623,-359.11071854648605,-359.040746779552,729.6720449924469
 21,999995,"Ordinal_Encoder(metric=mean, target=salary, features=ALL)",None,None,"GradientBoostingRegressor(max_depth=14, n_estimators=40)",-373.7380602998959,-373.0634523831605,-373.4671720035337,-371.0017111978924,-370.43618864072687,1734.4950029850006
 22,999995,"Target_Encoder(metric=mean, target=salary, features=ALL)",None,None,LinearRegression(),-372.8087778969437,-371.3384604863925,-371.9667780502604,-369.2903230028394,-368.4591310686743,28.003214120864868
+23,999995,"Ordinal_Encoder(metric=mean, target=salary, features=ALL)",None,None,"GradientBoostingRegressor(max_depth=7, n_estimators=60)",-356.8856120279054,-355.5189527755545,-355.8997915233872,-353.55673474766763,-352.9913120143237,1694.8732578754425
