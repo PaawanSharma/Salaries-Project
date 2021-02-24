@@ -25,3 +25,4 @@
 23,999995,"Ordinal_Encoder(metric=mean, target=salary, features=ALL)",None,None,"GradientBoostingRegressor(max_depth=7, n_estimators=60)",-356.8856120279054,-355.5189527755545,-355.8997915233872,-353.55673474766763,-352.9913120143237,1694.8732578754425
 24,999995,"Target_Encoder(metric=mean, target=salary, features=ALL)",None,StandardScaler(),SGDRegressor(),-373.678997686442,-373.7581097818836,-373.5286878349577,-369.9302946956738,-368.6307562716845,35.55339002609253
 25,999995,"Ordinal_Encoder(metric=mean, target=salary, features=ALL)",None,None,"GradientBoostingRegressor(max_depth=7, n_estimators=15)",-413.02971798052846,-412.03374316868405,-413.6688680160136,-409.5191633684653,-408.3335617429592,336.9570560455322
+26,999995,"Target_Encoder(metric=mean, target=salary, features=ALL)",None,None,"GradientBoostingRegressor(max_depth=7, n_estimators=40)",-357.1879522505473,-355.7959211321848,-356.36741418212546,-353.8255179059408,-353.19829602239935,1062.6954720020294
