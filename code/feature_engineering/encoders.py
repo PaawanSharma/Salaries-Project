@@ -155,6 +155,12 @@ same {} {}.".format(
         dataframe = dataframe.copy()
         return self._transform_mechanics(dataframe)
 
+    def _transform_mechanics(self, dataframe):
+        """Carry out the transformation."""
+        for feature in self.features:
+            dataframe[feature] = dataframe[feature].map(self.mapping[feature])
+        return dataframe
+
 
 class Ordinal_Encoder(_Group_Encoder):
     """
@@ -190,12 +196,6 @@ features={})".format(
         order = tuple(metric_values.index)
         self.mapping[feature] = dict(zip(order, range(len(order))))
 
-    def _transform_mechanics(self, dataframe):
-        """Carry out the transformation."""
-        for feature in self.features:
-            dataframe[feature] = dataframe[feature].map(self.mapping[feature])
-        return dataframe
-
 
 class Target_Encoder(_Group_Encoder):
     """The class for target encoding inherits from _Group_Encoder."""
@@ -228,14 +228,6 @@ features={})".format(
     def _generate_mapping(self, feature, metric_values):
         """Produce a mapping for a feature's transformation."""
         self.mapping[feature] = metric_values.to_dict()
-
-    def _transform_mechanics(self, dataframe):
-        """Carry out the transformation."""
-        for feature in self.features:
-            dataframe[feature] = dataframe[feature].replace(
-                self.mapping[feature]
-            )
-        return dataframe
 
 
 class Dummy_Encoder(_Encoder):
