@@ -188,16 +188,12 @@ features={})".format(
     def _generate_mapping(self, feature, metric_values):
         """Produce a mapping for a feature's transformation."""
         order = tuple(metric_values.index)
-        self.mapping[order] = range(len(order))
+        self.mapping[feature] = dict(zip(order, range(len(order))))
 
     def _transform_mechanics(self, dataframe):
         """Carry out the transformation."""
-        i = 0
-        for key, value in self.mapping.items():
-            dataframe[self.features[i]] = dataframe[self.features[i]].replace(
-                key, value
-            )
-            i += 1
+        for feature in self.features:
+            dataframe[feature] = dataframe[feature].map(self.mapping[feature])
         return dataframe
 
 
