@@ -25,7 +25,7 @@ from exceptions import NotUniqueError
 
 
 class _Encoder:
-    """"""
+    """_Encoder is the base class for all encoder classes."""
 
     def fit(self, dataframe, *args, **kwargs):
         """Fit the encoder to the data."""
@@ -52,11 +52,15 @@ class _Encoder:
 
     def reordered_correlation_matrix(self, dataframe, reordering):
         """Produce a correlation matrix with a custom ordering of index."""
+        # Get the correlation matrix
         original_matrix = self.correlation_matrix(dataframe)
+
+        # Reorder the matrix
         new_index = original_matrix.columns[reordering]
         reordered_matrix = original_matrix.reindex(
             index=new_index, columns=new_index
         )
+
         return reordered_matrix
 
     def correlation_map(
@@ -116,7 +120,7 @@ class _Encoder:
 
 
 class _Group_Encoder(_Encoder):
-    """The base class for group encoders."""
+    """_Group_Encoder is the base class for target and ordinal encoders."""
 
     def __init__(self, metric, target, features=[], exclude=[]):
         self.metric = metric
@@ -163,7 +167,33 @@ same {} {}.".format(
 
 
 class Ordinal_Encoder(_Group_Encoder):
-    """
+    """Class for ordinal encoding of features.
+
+    Encodes dataframe columns by replacing values with integers ordered based
+    on values the target takes for all rows with each feature value.
+
+    Instance variable are inherited from _Group_Encoder and public methods are
+    inherited from _Encoder via _Group_Encoder.
+
+    Instance variables
+    ------------------
+    metric -- the function used to score the target values for each group.
+    target -- the target variable to be used for scoring groups.
+    features -- a list of which features to encode; if None, all
+    categorical features are encoded.
+    exclude -- a list of any categorical features to drop from the dataset and
+    not encode.
+
+    Public methods
+    --------------
+    fit -- fit the encoder to a dataset.
+    transform -- transform a dataset with a fitted encoder.
+    correlation_matrix -- encode a dataset and produce a correlation matrix for
+    the encoded data.
+    reordered_correlation_matrix -- same as correlation_matrix but with the
+    indices in a custom order.
+    correlation_map -- encode a dataset and produce a plot of its correlation
+    matrix.
     """
 
     def __init__(self, *args, **kwargs):
@@ -198,7 +228,35 @@ features={})".format(
 
 
 class Target_Encoder(_Group_Encoder):
-    """The class for target encoding inherits from _Group_Encoder."""
+    """Class for target encoding of features.
+
+    Encodes dataframe columns by replacing each value with a score calculated
+    for the list of values the target takes for all rows with that feature
+    value.
+
+    Instance variable are inherited from _Group_Encoder and public methods are
+    inherited from _Encoder via _Group_Encoder.
+
+    Instance variables
+    ------------------
+    metric -- the function used to score the target values for each group.
+    target -- the target variable to be used for scoring groups.
+    features -- a list of which features to encode; if None, all
+    categorical features are encoded.
+    exclude -- a list of any categorical features to drop from the dataset and
+    not encode.
+
+    Public methods
+    --------------
+    fit -- fit the encoder to a dataset.
+    transform -- transform a dataset with a fitted encoder.
+    correlation_matrix -- encode a dataset and produce a correlation matrix for
+    the encoded data.
+    reordered_correlation_matrix -- same as correlation_matrix but with the
+    indices in a custom order.
+    correlation_map -- encode a dataset and produce a plot of its correlation
+    matrix.
+    """
 
     def __init__(self, *args, **kwargs):
         # Inherit initiation function from super-class with some addiitions
@@ -231,7 +289,32 @@ features={})".format(
 
 
 class Dummy_Encoder(_Encoder):
-    """The class for dummy coding."""
+    """Class for target encoding of features.
+
+    Encodes dataframe columns by creating a new column for each possible value
+    and deletes one new column per encoded feature to avoid introducing new
+    collinearities.
+
+    Public methods are inherited from _Encoder via _Group_Encoder.
+
+    Instance variables
+    ------------------
+    features -- a list of which features to encode; if None, all
+    categorical features are encoded.
+    exclude -- a list of any categorical features to drop from the dataset and
+    not encode.
+
+    Public methods
+    --------------
+    fit -- fit the encoder to a dataset.
+    transform -- transform a dataset with a fitted encoder.
+    correlation_matrix -- encode a dataset and produce a correlation matrix for
+    the encoded data.
+    reordered_correlation_matrix -- same as correlation_matrix but with the
+    indices in a custom order.
+    correlation_map -- encode a dataset and produce a plot of its correlation
+    matrix.
+    """
 
     def __init__(self, features=[], exclude=[]):
         self.features = features
