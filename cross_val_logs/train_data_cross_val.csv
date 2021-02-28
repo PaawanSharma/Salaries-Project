@@ -1,4 +1,4 @@
-,Training sample size,Encoder,Interactions,Scaling,Regressor,CSV_1_MSE,CSV_2_MSE,CSV_3_MSE,CSV_4_MSE,CSV_5_MSE,Time /s
+,Training sample size,Encoder,Interactions,Scaling,Regressor,CVS_1_MSE,CVS_2_MSE,CVS_3_MSE,CVS_4_MSE,CVS_5_MSE,Time /s
 0,999995,"Dummy_Encoder(features=ALL, exclude=['companyId'])",None,None,LinearRegression(),-386.3091294120444,-385.1919880539697,-385.9924727317866,-382.57077749883314,-382.0073189152712,13.76484990119934
 1,999995,"Target_Encoder(metric=mean, target=salary, features=ALL)","PolynomialFeatures(include_bias=False, interaction_only=True)",None,LinearRegression(),-376.6184610820632,-375.4664025604442,-376.601308672418,-372.7376593655907,-372.6093749126799,14.452216148376465
 2,999995,"Target_Encoder(metric=mean, target=salary, features=ALL)",None,StandardScaler(),LinearSVR(),-402.5650141278445,-401.7043616639045,-403.1678051903924,-398.942642842716,-398.2811082421362,18.65399718284607

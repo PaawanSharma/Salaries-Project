@@ -50,7 +50,7 @@ class Log:
                     "Scaling",
                     "Regressor",
                 ]
-                + ["CSV_{}_MSE".format(fold) for fold in range(1, 6)]
+                + ["CVS_{}_MSE".format(fold) for fold in range(1, 6)]
                 + ["Time /s"]
             )
             self.dataframe = DataFrame(columns=columns)

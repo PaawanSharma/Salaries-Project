@@ -1,4 +1,4 @@
-,Training sample size,Encoder,Interactions,Scaling,Regressor,CSV_1_MSE,CSV_2_MSE,CSV_3_MSE,CSV_4_MSE,CSV_5_MSE,Time /s
+,Training sample size,Encoder,Interactions,Scaling,Regressor,CVS_1_MSE,CVS_2_MSE,CVS_3_MSE,CVS_4_MSE,CVS_5_MSE,Time /s
 0,999995,"Ordinal_Encoder(metric=mean, target=salary, features=ALL)",None,None,"RandomForestRegressor(max_depth=5, n_estimators=25)",-452.3859492406744,-448.29281448956766,-451.20562545070686,-443.7218983171206,-444.4993957264832,329.6064200401306
 1,999995,"Ordinal_Encoder(metric=mean, target=salary, features=ALL)",None,None,"GradientBoostingRegressor(max_depth=5, n_estimators=40)",-358.5085215288054,-357.2549321912579,-357.8746964774394,-355.35497014612906,-354.5346320797312,962.6419820785522
 2,999995,"Ordinal_Encoder(metric=mean, target=salary, features=ALL)",None,None,"RandomForestRegressor(max_depth=10, n_estimators=25)",-359.8086917076261,-358.39630726859167,-359.0148003167725,-356.0265730478907,-355.84429319200984,668.7114431858063
